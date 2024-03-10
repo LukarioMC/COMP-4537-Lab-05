@@ -14,6 +14,9 @@ const routes = {
     '/api/definitions/': handleDefinition,
 };
 
+// Tracks total number of requests
+let requestCount = 0;
+
 /**
  * CORS Function copied directly from https://vercel.com/guides/how-to-enable-cors
  * used as middleware to set CORS headers
@@ -46,19 +49,20 @@ const allowCors = (fn) => async (req, res) => {
  * @param {http.IncomingMessage} req
  * @param {http.ServerResponse} res
  */
-function handleRequest(req, res) {
+async function handleRequest(req, res) {
     const reject = () =>
         respondJSON(res, 404, { status: 404, error: 'Invalid request' });
     if (!req || !req.url) reject();
     const parsedAddress = url.parse(req.url, true);
-    const handler = allowCors(routes[parsedAddress.pathname]) || reject;
-    if (handler) handler(req, res);
+    const handler = routes[parsedAddress.pathname] || reject;
+    return allowCors(handler(req, res));
 }
 
 // Begins the server and attaches the request handler.
 http.createServer((req, res) => {
-    logRequest(req);
+    requestCount += 1;
+    logRequest(req, requestCount);
     handleRequest(req, res);
 }).listen(PORT);
 
-console.log('Server is running on port ' + PORT + ' for requests...');
+console.log(`Server is running on http://localhost:${PORT} for requests...`);

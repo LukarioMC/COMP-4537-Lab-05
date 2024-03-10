@@ -38,10 +38,11 @@ function closeWithData(res, data) {
 /**
  * Logs the incoming request to the console.
  * @param {http.IncomingMessage} req
+ * @param {number} reqNumber
  */
-function logRequest(req) {
-    console.log('The server received a request!');
-    console.log('Request details: ' + req.url);
+function logRequest(req, reqNumber) {
+    console.log(`Server has begun serving request #${reqNumber}!`);
+    console.log(`[${reqNumber}] Requested endpoint: ${req.url}`);
 }
 
 module.exports = {
