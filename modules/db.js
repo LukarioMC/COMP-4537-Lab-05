@@ -14,6 +14,7 @@ async function executeSQL(userQuery) {
         const result = await client.query(userQuery);
         return { status: 'ok', result };
     } catch (err) {
+        console.error(err);
         return { status: 'error', err };
     }
 }
