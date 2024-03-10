@@ -2,6 +2,7 @@
  * A simple API server that can handle a GET request to retrieve a definition &
  * a POST request to store a definition.
  */
+require('dotenv').config();
 const http = require('http');
 const { respondJSON, logRequest } = require('./modules/utils');
 const { handleSQLRequest } = require('./modules/db');
@@ -43,14 +44,10 @@ const allowCors = (fn) => async (req, res) => {
  * @param {http.ServerResponse} res
  */
 async function handleRequest(req, res) {
-    const reject = () =>
-        respondJSON(res, 404, { status: 404, error: 'Invalid request' });
-    if (!req || !req.url) reject();
-    const parsedAddress = new URL(req.url);
-    if (parsedAddress.pathname.startsWith('/api/sql/')) {
+    if (req?.url?.startsWith('/api/sql')) {
         return allowCors(handleSQLRequest(req, res));
     } else {
-        reject();
+        respondJSON(res, 404, { status: 404, error: 'Invalid request' });
     }
 }
 
