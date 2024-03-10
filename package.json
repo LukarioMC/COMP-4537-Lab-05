@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "lab05",
+  "version": "1.0.0",
+  "main": "server.js",
+  "keywords": [],
+  "author": "Dakaro Mueller (A01294207)",
+  "license": "ISC",
+  "description": "SQL Server for COMP4537 Lab 05",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "pg": "^8.11.3"
+  }
+}

@@ -3,16 +3,9 @@
  * a POST request to store a definition.
  */
 const http = require('http');
-const url = require('url');
 const { respondJSON, logRequest } = require('./modules/utils');
-const { handleDefinition } = require('./modules/definitions');
+const { handleSQLRequest } = require('./modules/db');
 const PORT = process.env.PORT || 8000;
-
-// Maps the different possible routes to handlers
-const routes = {
-    '/api/definitions': handleDefinition,
-    '/api/definitions/': handleDefinition,
-};
 
 // Tracks total number of requests
 let requestCount = 0;
@@ -53,9 +46,12 @@ async function handleRequest(req, res) {
     const reject = () =>
         respondJSON(res, 404, { status: 404, error: 'Invalid request' });
     if (!req || !req.url) reject();
-    const parsedAddress = url.parse(req.url, true);
-    const handler = routes[parsedAddress.pathname] || reject;
-    return allowCors(handler(req, res));
+    const parsedAddress = new URL(req.url);
+    if (parsedAddress.pathname.startsWith('/api/sql/')) {
+        return allowCors(handleSQLRequest(req, res));
+    } else {
+        reject();
+    }
 }
 
 // Begins the server and attaches the request handler.
