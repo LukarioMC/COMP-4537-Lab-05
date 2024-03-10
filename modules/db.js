@@ -50,7 +50,22 @@ async function handleGet(req, res) {
     }
 }
 
-async function handlePost(req, res) {}
+async function handlePost(req, res) {
+    let payload = '';
+    req.on('data', (data) => {
+        payload += data;
+    });
+    req.on('end', async () => {
+        const body = JSON.parse(payload);
+        executeSQL(body.query)
+            .then((result) => {
+                respondJSON(res, 200, result);
+            })
+            .catch((err) => {
+                respondJSON(res, 400, err);
+            });
+    });
+}
 
 module.exports = {
     handleSQLRequest,
