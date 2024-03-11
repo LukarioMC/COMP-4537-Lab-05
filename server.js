@@ -45,7 +45,7 @@ const allowCors = (fn) => async (req, res) => {
  */
 async function handleRequest(req, res) {
     if (req?.url?.startsWith('/api/sql')) {
-        return allowCors(handleSQLRequest(req, res));
+        return allowCors(handleSQLRequest)(req, res);
     } else {
         respondJSON(res, 404, { status: 404, error: 'Invalid request' });
     }
